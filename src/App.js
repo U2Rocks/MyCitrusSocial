@@ -18,14 +18,14 @@ function App() {
   return (
     <>
       <div className="flex flex-row gap-4 p-2 bg-lightest-g drop-shadow-xl sticky top-0 z-10 overflow-scroll">
-        <div className="text-5xl font-bold m-4 sm:text-2xl">CitrusSocial&trade;</div>
+        <div className="text-4xl font-bold m-4">CitrusSocial&trade;</div>
         <nav className="flex flex-row items-center">
-          <Link className="p-4 m-2 text-xl hover:font-extrabold hover:bg-light-g" to="/home">Home</Link>
+          <Link className="p-4 m-2 text-2xl hover:font-extrabold hover:bg-light-g" to="/home">Home</Link>
           { isLoggedin ?
-          <Link className="p-4 m-2 text-xl hover:font-extrabold hover:bg-light-g" to="/login">Login</Link> :
-          <Link className="p-4 m-2 text-xl hover:font-extrabold hover:bg-light-g" to="/login">Logout</Link>
+          <Link className="p-4 m-2 text-2xl hover:font-extrabold hover:bg-light-g" to="/login">Login</Link> :
+          <Link className="p-4 m-2 text-2xl hover:font-extrabold hover:bg-light-g" to="/login">Logout</Link>
           }
-          <Link className="p-4 m-2 text-xl hover:font-extrabold hover:bg-light-g" to="/signup">Signup</Link>
+          <Link className="p-4 m-2 text-2xl hover:font-extrabold hover:bg-light-g" to="/signup">Signup</Link>
         </nav>
       </div>
       <Outlet />
