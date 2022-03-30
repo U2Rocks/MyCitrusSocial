@@ -1,19 +1,39 @@
-import { Outlet, Link } from "react-router-dom"
-import { useState } from "react"
+import { Outlet, Link, useOutletContext } from "react-router-dom"
+import { useState, useEffect, useContext } from "react"
+import { auth } from "./firebase";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 
 // make a popup form for the create a post form and do not use a route in the final version...
 // App is base template for pages: place [header] here...
 
-// to add: [big title] [link to home] [link to signup] [link to login] [link to logout]
-// conditionally render signup/login/logout options based on if user has logged in
+// use context tag in outlet to pass down useState from App
+// const [user, setUser] = useOutletContext(); in child elements to access value of user...
 
 //signup, login, home
 
 function App() {
 
-  const isLoggedin = true
+  // useEffect for debugging purposes
+  useEffect(() => {
+    console.log("%c App(header) loaded...", "color: green")
+  }, [])
+
+  // state variable to manage whether auth or non-auth UI should load
+  const [user, setUser] = useState({})
+  onAuthStateChanged(auth, (currentUser) => {
+    setUser(currentUser)
+  })
+
+  // turnery to check whether auth or non-auth elements should load
+  const isLoggedin = user ? true : false
+
+  // function to sign out users via the header
+  const logout = async () => {
+    await signOut(auth);
+  }
 
 
+  // <Link className="p-4 m-2 text-2xl hover:font-extrabold hover:bg-light-g" to="/login">Login</Link>
 
   return (
     <>
@@ -22,13 +42,14 @@ function App() {
         <nav className="flex flex-row items-center">
           <Link className="p-4 m-2 text-2xl hover:font-extrabold hover:bg-light-g" to="/home">Home</Link>
           { isLoggedin ?
-          <Link className="p-4 m-2 text-2xl hover:font-extrabold hover:bg-light-g" to="/login">Login</Link> :
-          <Link className="p-4 m-2 text-2xl hover:font-extrabold hover:bg-light-g" to="/login">Logout</Link>
+          <Link onClick={logout} className="p-4 m-2 text-2xl hover:font-extrabold hover:bg-light-g" to="/home">Logout</Link> :
+          <Link className="p-4 m-2 text-2xl hover:font-extrabold hover:bg-light-g" to="/login">Login</Link>
           }
-          <Link className="p-4 m-2 text-2xl hover:font-extrabold hover:bg-light-g" to="/signup">Signup</Link>
+          { isLoggedin ? <div></div> : <Link className="p-4 m-2 text-2xl hover:font-extrabold hover:bg-light-g" to="/signup">Signup</Link>}
         </nav>
+        { isLoggedin ? <div className="p-4 m-2 text-2xl">{user?.email}</div> : <div></div>}
       </div>
-      <Outlet />
+      <Outlet context={[user, setUser]} />
     </>
   );
 }

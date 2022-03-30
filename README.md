@@ -2,7 +2,7 @@
 
 ## Summary
 
-This is a social network app for the mycitrus brand(original site: http://www.mycitrus.net/) that allows users to share information. The app is currently under development...
+This is a test social network app for the mycitrus brand(original site: http://www.mycitrus.net/) that allows users to share information via text and images.
 
 ## Build
 
@@ -10,6 +10,10 @@ The app uses react and tailwind for the front end and firebase firestore for hol
 
 ### Final Comments and notes
 
--- Currently back end is not implemented...
+-- Basic uses of app are work(signing in, creating a user, making a post, reading from the backend...)
 
--- App will have more features added once critical features completed(auth, CRUD, post filtering, etc...)
+-- Google authentication has trusted types error
+
+-- Memory leak occurs when google signed in user adds a post
+
+-- Home page reloads too many times when post is added(5-7 times)

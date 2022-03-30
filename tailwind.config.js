@@ -14,7 +14,8 @@ module.exports = {
       'black': '#000000',
       'formblue': '#03bafc',
       'darkformblue': "#0ba0e3",
-      'linkteal': '#0dd487'
+      'linkteal': '#0dd487',
+      'error-bg': '#bce310',
     },
     extend: {},
   },

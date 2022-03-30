@@ -1,6 +1,52 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"
+import { db } from '../../firebase'
 
-const Addpostform = () => {
+const Addpostform = ({ removeModal, userRef }) => {
+
+    useEffect(()=>{
+        console.log("%c addpostform loaded...", "color: green")
+    }, [])
+
+    // reference collection
+    const postsRef = collection(db, "CitrusPosts")
+
+    // handle textarea changes
+    const handleAreaChange = (event) => {
+        setPostValue(event.target.value)
+    }
+
+    // function to create object in two different ways depending on if image(or something visual) is provided
+    const addPostToDB = async () => {
+        if (imageValue === "No Image"){
+            try {
+                await addDoc(postsRef, {
+                    timestamp: serverTimestamp(),
+                    title: titleValue,
+                    tag: tagValue,
+                    text: postValue,
+                    user: userRef.email
+                })
+                } catch(error) {
+                    console.error(`document ${titleValue} not added to database`)
+                }
+        } else {
+        try {
+        await addDoc(postsRef, {
+            timestamp: serverTimestamp(),
+            title: titleValue,
+            tag: tagValue,
+            text: postValue,
+            image: imageValue,
+            user: userRef.email
+        })
+        } catch(error) {
+            console.error(`document ${titleValue} not added to database`)
+        }
+    }
+    }
+
+
     const titleRef = useRef()
     const tagRef = useRef()
     const imageRef = useRef()
@@ -34,9 +80,9 @@ const Addpostform = () => {
             setErrorMsg("Tag field is empty...")
             return
         }
+        // does not work and imagevalue in object set to N/A(but program still functions)
         if (imageValue === "" || imageValue === "N/A") {
-            setErrorMsg("Image field is empty...")
-            return
+            setImageValue("No Image")
         }
         if (postValue === "" || postValue === "N/A") {
             setErrorMsg("Post field is empty...")
@@ -55,6 +101,9 @@ const Addpostform = () => {
         console.log(`%c post: ${postValue}`, "color: orange")
         console.groupEnd()
 
+        // add document to server
+        addPostToDB()
+
         // reset form fields and state values
         setTitleValue('N/A')
         setTagValue('N/A')
@@ -67,21 +116,22 @@ const Addpostform = () => {
         postRef.current.value = ""
 
         // automatically close form when done adding post...
-        // WIP...
+        removeModal()
     }
 
 
   return (
     <>
         <div id="NewPostForm" className="flex flex-col items-center drop-shadow-sm mt-6">
-        <div className="w-3/4">
-          <div className="text-center text-3xl font-bold bg-light-g p-1 pt-4">Create New Post</div>
+        <div className="w-5/6">
+          <button className=" drop-shadow-lg border-2 border-white m-1 p-4 pt-2 pb-2 bg-[#ff052f] rounded-full" onClick={removeModal}>&#88;</button>
+          <div className="text-center text-3xl font-bold bg-light-g p-1 pt-4">Create A New Post</div>
           <form onSubmit={addPost} className="flex flex-col gap-4 items-center p-4 bg-light-g">
-            {errorMsg ? <div className="text-[#ff052f] bg-black p-1 rounded-xl">{errorMsg}</div> : <div></div>}
+            {errorMsg ? <div className="text-black bg-error-bg p-1 rounded-xl">{errorMsg}</div> : <div></div>}
             <input onChange={(event) => setTitleValue(event.target.value)} ref={titleRef} className="w-3/4 focus:outline-none rounded-lg p-4 drop-shadow-md" type="text" id="titleInput" maxLength={50} placeholder="Title..." />
             <input onChange={(event) => setTagValue(event.target.value)} ref={tagRef} className="w-3/4 focus:outline-none rounded-lg p-4 drop-shadow-md" type="text" id="tagInput" maxLength={50} placeholder="Tag Name..." />
-            <input onChange={(event) => setImageValue(event.target.value)} ref={imageRef} className="w-3/4 focus:outline-none rounded-lg p-4 drop-shadow-md" type="text" id="imageInput" maxLength={50} placeholder="Image URL..." />
-            <input onChange={(event) => setPostValue(event.target.value)} ref={postRef} className="w-3/4 focus:outline-none rounded-lg p-4 drop-shadow-md" type="text" id="postInput" placeholder="Post Text..." />
+            <input onChange={(event) => setImageValue(event.target.value)} ref={imageRef} className="w-3/4 focus:outline-none rounded-lg p-4 drop-shadow-md" type="text" id="imageInput" maxLength={50} placeholder="Image URL(Optional)..." />
+            <textarea onChange={handleAreaChange} ref={postRef} className="w-3/4 focus:outline-none rounded-lg p-4 drop-shadow-md" type="text" id="postInput" placeholder="Post Text..." maxLength={500}></textarea>
             <button className="hover:font-bold text-white bg-formblue hover:bg-darkformblue p-4 rounded-xl pl-8 pr-8 text-xl" type="submit">Add A Post</button>
           </form>
         </div>

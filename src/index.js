@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Loginform from './components/forms/Loginform';
 import Signupform from './components/forms/Signupform';
-import Header from './components/Header';
 import Home from './pages/Home';
 import './index.css';
 import App from './App';
@@ -24,8 +23,7 @@ ReactDOM.render(
         </Route>
         <Route path="*" element={
         <main style={{ padding: "1rem" }}>
-          <Header />
-          <p>There's nothing here!</p>
+          <p>ERROR 404: There's nothing here!</p>
         </main>
       } /> 
     </Routes>
